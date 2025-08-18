@@ -1,6 +1,8 @@
 // src/middleware/error.ts
-import { NextFunction, Request, Response } from 'express';
-export function errorHandler(err: any, _req: Request, res: Response, _next: NextFunction) {
-  console.error(err);
-  res.status(err.status || 500).json({ error: err.message || 'Server error' });
+// src/middleware/error.ts
+import type { NextFunction, Request, Response } from 'express';
+
+export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
+  const message = err instanceof Error ? err.message : 'Unknown error';
+  res.status(500).json({ error: message });
 }

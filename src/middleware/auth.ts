@@ -1,5 +1,6 @@
 // src/middleware/auth.ts
-import { Request, Response, NextFunction } from 'express';
+// src/middleware/auth.ts
+import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 
 export function auth(req: Request, res: Response, next: NextFunction) {

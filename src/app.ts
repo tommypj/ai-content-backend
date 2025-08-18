@@ -3,20 +3,20 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { router as healthRouter } from './routes/health';
-import { errorHandler } from './middleware/error';
-import { router as authRouter } from './routes/auth';
+import { router as healthRouter } from './routes/health.js';
+import { router as authRouter } from './routes/auth.js';
+import authRoutes from './routes/auth.js';
+import healthRoutes from './routes/health.js';
+import { errorHandler } from './middleware/error.js';
 
 
-const app = express();
-app.use(express.json());
+export const app = express();
 app.use(cors());
-app.use(helmet());
-app.use(morgan('dev'));
+app.use(express.json());
 
-app.use('/health', healthRouter);
+app.use('/api/auth', authRoutes);
+app.use('/api/health', healthRoutes);
+
+app.get('/', (_req, res) => res.json({ ok: true }));
+
 app.use(errorHandler);
-app.use('/auth', authRouter);
-
-
-export default app;
