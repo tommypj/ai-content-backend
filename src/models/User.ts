@@ -1,22 +1,28 @@
-import mongoose, { Schema, type InferSchemaType, type HydratedDocument } from 'mongoose';
-import bcrypt from 'bcryptjs';
+// src/models/User.ts
+import mongoose, { Schema } from 'mongoose';
+import type { InferSchemaType, HydratedDocument, Model } from 'mongoose';
 
-const userSchema = new Schema({
-  email: { type: String, required: true, index: true, unique: true },
-  passwordHash: { type: String, required: true },
-  plan: { type: String, enum: ['free', 'pro'], default: 'free' },
-  createdAt: { type: Date, default: () => new Date() }
-});
+const userSchema = new Schema(
+  {
+    email: { type: String, required: true, unique: true, index: true },
+    passwordHash: { type: String, required: true },
+    plan: { type: String, enum: ['free', 'pro'], default: 'free' }
+  },
+  { timestamps: true }
+);
 
-// Instance method
+// optional instance method
 userSchema.methods.comparePassword = async function (plain: string) {
+  const bcrypt = await import('bcryptjs').then(m => m.default);
   return bcrypt.compare(plain, this.passwordHash);
 };
 
-// ----- Types -----
 export type User = InferSchemaType<typeof userSchema> & {
   comparePassword: (plain: string) => Promise<boolean>;
 };
 export type UserDoc = HydratedDocument<User>;
 
-export const UserModel = mongoose.model<User>('User', userSchema);
+// ✅ IMPORTANT: give the model a concrete, non-union type
+export const UserModel: Model<User> =
+  (mongoose.models.User as Model<User> | undefined) ??
+  mongoose.model<User>('User', userSchema);
