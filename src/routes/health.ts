@@ -1,4 +1,5 @@
-// src/routes/health.ts
 import { Router } from 'express';
-export const router = Router();
-router.get('/', (_req, res) => res.json({ ok: true, ts: Date.now() }));
+const router = Router();
+
+router.get('/', (_req, res) => res.json({ status: 'healthy' }));
+export default router;
